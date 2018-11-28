@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>评分插件</title>
+		<style type="text/css">
+			@font-face {
+				font-family: 'fontello';
+				src: url('../font/fontello.eot?48921730');
+				src: url('../font/fontello.eot?48921730#iefix') format('embedded-opentype'), url('../font/fontello.woff?48921730') format('woff'), url('../font/fontello.ttf?48921730') format('truetype'), url('../font/fontello.svg?48921730#fontello') format('svg');
+				font-weight: normal;
+				font-style: normal;
+			}
+			
+			.demo-icon {
+				font-family: "fontello";
+				/*字体样式:标准*/
+				font-style: normal;
+				/*字体粗细:标准*/
+				font-weight: normal;
+				/*字体居中*/
+				text-align: center;
+			}
+			/*#minRating {
+				display: inline-block;
+			}*/
+		</style>
+	</head>
+
+	<body>
+		<div id="minRating"></div>
+		<script src="../js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			;(function(factory) {
+				factory(window, document, window.jQuery);
+			}(function(win, doc, $) {
+				
+				/*
+				 * 1、可以对事件使用委托方案
+				 * 2、可用半个星星
+				 * 
+				 */
+				
+				var minRating = function( container, title="服务态度", number=5){
+					var selected = 0;
+					var boo=true;
+					var ratingUse = function (index,points,clickColor){
+						$(container+">span:gt("+index+")").css({"color":"#000"}).html("&#xe806;");
+						$(container+">span:lt("+(points+1)+")").css({"color":clickColor}).html("&#xe807;");
+						return $(container+" label:last-child").text((points+1)+"分");
+					}
+					$("<label/>").text(title).css({"margin-right":"10px","color":"#666"}).appendTo($(container));
+					for(var i=0; i<number; i++){
+						$("<span/>").addClass("demo-icon").data("number",i).html("&#xe806;")
+						.click(function(){
+							selected = $(this).data("number");
+							boo = false;
+							ratingUse(selected,selected,"red").css("color","red");
+						}).mouseenter(function(){
+							var temporary = $(this).data("number");
+							ratingUse(selected,temporary,"#e48080");
+						}).mouseleave(
+							function(){
+								//考虑
+								ratingUse(selected,selected,"red");
+								if(boo){
+									$(container+">span:lt(1)").css({"color":"#000"}).html("&#xe806;");
+									$(container+" label:last-child").text("0分");
+								}
+							}
+						).css({"border-left":"2px solid transparent","border-right":"2px solid transparent","cursor":"pointer"})
+						.appendTo($(container));
+					}
+					$("<label/>").text("0分").css({"margin-left":"10px","color":"#666"}).appendTo($(container));
+					return $(container);
+				};
+				
+				$.extend({
+					minRating:minRating
+				});
+				
+				$.minRating( "#minRating", "服务态度", 5);
+
+			}));
+		</script>
+	</body>
+
+</html>
